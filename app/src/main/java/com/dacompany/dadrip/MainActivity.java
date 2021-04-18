@@ -1,7 +1,7 @@
 package com.dacompany.dadrip;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,9 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     BluetoothAdapter bluetoothAdapter;
@@ -41,18 +44,8 @@ public class MainActivity extends AppCompatActivity {
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }
-        if (!bluetoothAdapter.isEnabled()) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Bluetooth Disabled")
-                    .setMessage("You need to turn on Bluetooth in order to use this app les no goooo")
-                    .setPositiveButton("Ugh, fine.", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setIcon(android.R.drawable.stat_sys_data_bluetooth)
-                    .show();
-        }
+
+        makeDiscoverable();
     }
 
     @Override
@@ -75,19 +68,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendInvite() {
-
-    }
-
-    public void acceptInvite() {
-
-    }
-
-    public void rejectInvite() {
-
-    }
-
-    public void changeName() {
-
+    public void makeDiscoverable() {
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivity(discoverableIntent);
     }
 }
