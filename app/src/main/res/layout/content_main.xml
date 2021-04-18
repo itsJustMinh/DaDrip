@@ -29,4 +29,5 @@
         android:text="Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nav_host_fragment" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
