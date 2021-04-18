@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.dacompany.dadrip.dummy.DummyContent;
+import com.dacompany.dadrip.dummy.Data;
 
 import java.util.HashSet;
 
@@ -52,6 +52,18 @@ public class DeviceListFragment extends Fragment {
         }
     }
 
+    //we need to show the list of devices once we add them
+    public final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Data.addItem(device);
+            }
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,21 +78,10 @@ public class DeviceListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS));
+            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(Data.ITEMS));
         }
         return view;
     }
 
-    //we need to show the list of devices once we add them
-    public HashSet<BluetoothDevice> pairedDevices = new HashSet<>();
-    public final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                pairedDevices.add(device);
-            }
-        }
-    };
+
 }
