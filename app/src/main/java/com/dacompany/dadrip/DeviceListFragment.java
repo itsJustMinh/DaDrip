@@ -25,9 +25,19 @@ public class DeviceListFragment extends ListFragment {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private int mColumnCount = Data.ITEM_MAP.keySet().size();
 
-    public BroadcastReceiver broadcastReceiver;
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Discovery has found a device. Get the BluetoothDevice
+                // object and its info from the Intent.
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Data.addItem(device);
+            }
+        }
+    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -53,17 +63,6 @@ public class DeviceListFragment extends ListFragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    Data.addItem(device);
-                }
-            }
-        };
     }
 
     @Override
